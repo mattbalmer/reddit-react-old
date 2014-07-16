@@ -9,9 +9,9 @@ var Sort = React.createClass({
             });
 
         return (
-            <ul className='sorting-options'>
+            <div className='btn-group'>
                 {html}
-            </ul>
+            </div>
         );
     }
 });

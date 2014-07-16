@@ -84,7 +84,7 @@ var SortOption = React.createClass({displayName: 'SortOption',
             classNames += ' active';
         }
 
-        return React.DOM.li( {onClick:this.onClick, className:classNames}, this.props.mode);
+        return React.DOM.button( {type:"button", onClick:this.onClick, className:classNames}, this.props.mode);
     }
 });
 /** @jsx React.DOM */
@@ -98,7 +98,7 @@ var Sort = React.createClass({displayName: 'Sort',
             });
 
         return (
-            React.DOM.ul( {className:"sorting-options"}, 
+            React.DOM.div( {className:"btn-group"}, 
                 html
             )
         );

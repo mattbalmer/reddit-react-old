@@ -12,6 +12,6 @@ var SortOption = React.createClass({
             classNames += ' active';
         }
 
-        return <li onClick={this.onClick} className={classNames}>{this.props.mode}</li>;
+        return <button type='button' onClick={this.onClick} className={classNames}>{this.props.mode}</button>;
     }
 });
