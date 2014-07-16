@@ -1,7 +1,7 @@
-reddit = (function(){
-    var reddit = {};
+api = (function(){
+    var api = {};
 
-    reddit.request = function(path) {
+    api.request = function(path) {
         var req = new XMLHttpRequest()
             , deferred = Q.defer();
 
@@ -32,9 +32,9 @@ reddit = (function(){
         return deferred.promise;
     };
 
-    reddit.r = function(subreddit) {
-        return reddit.request('/r/'+subreddit);
+    api.r = function(subapi) {
+        return api.request('/r/'+subapi);
     };
 
-    return reddit;
+    return api;
 }());

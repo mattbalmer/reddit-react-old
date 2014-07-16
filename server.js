@@ -3,8 +3,7 @@ var express = require('express'),
     stylus = require('stylus'),
     nib = require('nib'),
     fs = require('fs'),
-    config = require('config'),
-    request = require('request');
+    config = require('config');
 
 var app = express();
 
@@ -25,15 +24,7 @@ app.use(stylus.middleware({
     }
 }));
 
-app.get('/', function(req, res) {
-    res.redirect('index.html');
-});
-
-app.get('/r/:r', function(req, res) {
-    request('http://reddit.com/r/' + req.params.r + '.json', function(error, response, body) {
-        res.send(response.statusCode, error || body);
-    });
-});
+app.use( require('./router') );
 
 // Static dir
 app.use(express.static(__dirname + '/public'));

@@ -10,6 +10,7 @@
   "private": true,
   "dependencies": {
     "react": "~0.10.0",
-    "q": "1.0.1"
+    "q": "1.0.1",
+    "bootstrap": "~3.2.0"
   }
 }

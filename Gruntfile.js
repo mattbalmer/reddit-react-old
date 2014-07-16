@@ -1,34 +1,35 @@
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        jade: {
+        react: {
+            compile: {
+                files: {
+                    'public/js/app.js': 'app/js/**/*.js'
+                }
+            }
+        },
+        uglify: {
             compile: {
                 options: {
-                    client: false,
-                    pretty: true
+                    wrap: 'reddit'
                 },
-                files: [
-                    {
-                        cwd: 'app/views',
-                        src: '**/*.jade',
-                        dest: 'public',
-                        expand: true,
-                        ext: '.html'
-                    }
-                ]
+                files: {
+                    'public/js/app.min.js': 'public/js/app.js'
+                }
             }
         },
         watch: {
-            jade: {
-                files: 'app/**/*.jade',
-                tasks: ['jade']
+            js: {
+                files: 'app/**/*.js',
+                tasks: ['react', 'uglify']
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-jade');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-react');
 
-    grunt.registerTask('compile', ['jade']);
+    grunt.registerTask('compile', ['react', 'uglify']);
     grunt.registerTask('default', ['compile', 'watch']);
 };
