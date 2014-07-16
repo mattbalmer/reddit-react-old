@@ -11,12 +11,12 @@ var reddit = (function(api) {
 
                 React.renderComponent(
                     <PostList posts={posts} />,
-                    document.getElementById('main')
+                    document.getElementById('Main')
                 );
 
                 React.renderComponent(
                     <Sort mode={mode} />,
-                    document.getElementById('sorting')
+                    document.getElementById('SortOptions')
                 );
             });
     };

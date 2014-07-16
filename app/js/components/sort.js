@@ -9,9 +9,7 @@ var Sort = React.createClass({
             });
 
         return (
-            <div className='btn-group'>
-                {html}
-            </div>
+            <div className='btn-group'>{html}</div>
         );
     }
 });

@@ -78,7 +78,7 @@ var SortOption = React.createClass({displayName: 'SortOption',
     },
     render: function() {
         var mode = this.props.mode.toLowerCase()
-            , classNames = mode;
+            , classNames = mode + ' btn btn-default';
 
         if(this.props.active) {
             classNames += ' active';
@@ -98,9 +98,7 @@ var Sort = React.createClass({displayName: 'Sort',
             });
 
         return (
-            React.DOM.div( {className:"btn-group"}, 
-                html
-            )
+            React.DOM.div( {className:"btn-group"}, html)
         );
     }
 });
@@ -117,12 +115,12 @@ var reddit = (function(api) {
 
                 React.renderComponent(
                     PostList( {posts:posts} ),
-                    document.getElementById('main')
+                    document.getElementById('Main')
                 );
 
                 React.renderComponent(
                     Sort( {mode:mode} ),
-                    document.getElementById('sorting')
+                    document.getElementById('SortOptions')
                 );
             });
     };

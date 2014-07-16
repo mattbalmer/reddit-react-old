@@ -6,7 +6,7 @@ var SortOption = React.createClass({
     },
     render: function() {
         var mode = this.props.mode.toLowerCase()
-            , classNames = mode;
+            , classNames = mode + ' btn btn-default';
 
         if(this.props.active) {
             classNames += ' active';
