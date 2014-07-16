@@ -1,0 +1,17 @@
+doctype html
+html
+    head
+        title reddit React
+
+        script(src='vendor/q/q.js')
+        script(src='vendor/react/react-with-addons.min.js')
+        script(src='vendor/react/JSXTransformer.js')
+
+        link(rel='stylesheet', href='css/base.css')
+        script(src='js/reddit.js')
+        script(type='text/jsx', src='js/app.js')
+
+    body
+        include blocks/header
+
+        include blocks/posts
