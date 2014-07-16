@@ -2,7 +2,6 @@
 var Post = React.createClass({
     render: function() {
         var post = this.props.post.data;
-        console.log('post', post);
         return (
             <div className='post'>
                 <span className='id'>{this.props.id}</span>
@@ -24,7 +23,6 @@ var PostList = React.createClass({
             return <Post post={post} id={i} />
         });
 
-        console.log('posts?', posts);
         return (
             <section className='posts'>
                 { posts }
@@ -33,15 +31,64 @@ var PostList = React.createClass({
     }
 });
 
+var SortOption = React.createClass({
+    handleClick: function(event) {
+        console.log('CLICK!', this.props.mode);
+        app.fetch('all/'+this.props.mode.toLowerCase())
+    },
+    render: function() {
+        var mode = this.props.mode.toLowerCase()
+            , classNames = mode;
+
+        if(this.props.active) {
+            classNames += ' active';
+        }
+
+        return <li onClick={this.onClick} className={classNames}>{this.props.mode}</li>;
+    }
+});
+
+var Sort = React.createClass({
+    render: function() {
+        var cs = React.addons.classSet
+            , mode = this.props.mode
+            , options = [ 'Hot', 'New', 'Top' ]
+            , html = options.map(function(option) {
+                return <SortOption mode={option} active={option.toLowerCase() == mode.toLowerCase()} />
+            });
+
+        return (
+            <ul className='sorting-options'>
+                {html}
+            </ul>
+        );
+    }
+});
+
 // ============
 // === Main ===
 // ============
-reddit.r('all')
-    .then(function(req) {
-        var posts = req.data.data.children;
+app = (function(reddit) {
+    var app = {};
 
-        React.renderComponent(
-            <PostList posts={posts} />,
-            document.getElementById('main')
-        );
-    });
+    app.fetch = function(path) {
+        reddit.r(path)
+            .then(function(req) {
+                var posts = req.data.data.children;
+
+                React.renderComponent(
+                    <PostList posts={posts} />,
+                    document.getElementById('main')
+                );
+
+                React.renderComponent(
+                    <Sort mode='hot' />,
+                    document.getElementById('sorting')
+                );
+            });
+    };
+
+    return app;
+}(reddit));
+
+app.fetch('all');
