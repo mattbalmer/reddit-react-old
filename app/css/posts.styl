@@ -1,13 +1,18 @@
 .post
-    height 80px
-    margin 10px 0
+    $height = 60px
+
+    height $height
     padding 10px
     border-bottom 1px dashed #ddd
+    box-sizing content-box
+
+    &.active
+        background #eee
 
     .id, .score
         display inline-block
-        line-height 80px
-        height 80px
+        line-height $height
+        height $height
         vertical-align top
 
     .id
@@ -18,7 +23,7 @@
         width 50px
 
     .thumb
-        width 80px
+        width $height
         max-height 100%
         margin-right 10px
         vertical-align middle
@@ -32,6 +37,9 @@
         .title
             vertical-align top
             display block
+            color #00F
+            font-size $font-size-large
+            font-weight normal
 
         .author
             display inline-block

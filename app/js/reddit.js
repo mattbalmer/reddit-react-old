@@ -15,6 +15,11 @@ var reddit = (function(api) {
                 );
 
                 React.renderComponent(
+                    <SubredditSearch />,
+                    document.getElementById('SubredditSearch')
+                );
+
+                React.renderComponent(
                     <Sort mode={mode} />,
                     document.getElementById('SortOptions')
                 );

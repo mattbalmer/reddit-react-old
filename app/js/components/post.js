@@ -1,9 +1,18 @@
 /** @jsx React.DOM */
 var Post = React.createClass({
+    onClick: function() {
+        this.props.onClick(this.props.post.data);
+    },
     render: function() {
-        var post = this.props.post.data;
+        var post = this.props.post.data
+            , cx = React.addons.classSet
+            , classes = cx({
+                'post': true,
+                'active': post.id == this.props.activePost.id
+            });
+
         return (
-            <div className='post'>
+            <div className={classes} onClick={this.onClick}>
                 <span className='id'>{this.props.id}</span>
                 <span className='score'>{post.score}</span>
                 <img className='thumb' src={post.thumbnail}/>

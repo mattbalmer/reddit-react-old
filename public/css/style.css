@@ -1,5 +1,6 @@
 body * {
   box-sizing: border-box;
+  font-family: verdana, arial, helvetica, sans-serif;
 }
 body {
   background: #fff;
@@ -13,24 +14,48 @@ header {
 }
 main {
   padding-left: 2em;
+  padding-top: 10px;
 }
 h1 {
+  display: inline-block;
   margin: 0;
-  vertical-align: bottom;
   line-height: 60px;
   text-indent: 0.5em;
+  vertical-align: middle;
+}
+#SubredditSearch {
+  display: inline-block;
+  margin-left: 20px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+#SubredditSearch input {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+#SubredditSearch button {
+  vertical-align: middle;
+}
+#SortOptions {
+  display: inline-block;
+  margin-left: 20px;
+  vertical-align: middle;
 }
 .post {
-  height: 80px;
-  margin: 10px 0;
+  height: 60px;
   padding: 10px;
   border-bottom: 1px dashed #ddd;
+  box-sizing: content-box;
+}
+.post.active {
+  background: #eee;
 }
 .post .id,
 .post .score {
   display: inline-block;
-  line-height: 80px;
-  height: 80px;
+  line-height: 60px;
+  height: 60px;
   vertical-align: top;
 }
 .post .id {
@@ -41,7 +66,7 @@ h1 {
   width: 50px;
 }
 .post .thumb {
-  width: 80px;
+  width: 60px;
   max-height: 100%;
   margin-right: 10px;
   vertical-align: middle;
@@ -55,6 +80,9 @@ h1 {
 .post .details .title {
   vertical-align: top;
   display: block;
+  color: #00f;
+  font-size: 16px;
+  font-weight: normal;
 }
 .post .details .author {
   display: inline-block;

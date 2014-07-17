@@ -40,10 +40,19 @@ api = (function(){
 }());
 /** @jsx React.DOM */
 var PostList = React.createClass({displayName: 'PostList',
+    getInitialState: function(){
+        return { activePost: {} }
+    },
+    onTabSelected: function(post) {
+        if(this.state.activePost == post)
+            post = {};
+        
+        this.setState({activePost: post});
+    },
     render: function() {
         var posts = this.props.posts.map(function(post, i) {
-            return Post( {post:post, id:i} )
-        });
+            return Post( {post:post, id:i, onClick:this.onTabSelected, activePost:this.state.activePost} )
+        }, this);
 
         return (
             React.DOM.section( {className:"posts"}, 
@@ -54,10 +63,19 @@ var PostList = React.createClass({displayName: 'PostList',
 });
 /** @jsx React.DOM */
 var Post = React.createClass({displayName: 'Post',
+    onClick: function() {
+        this.props.onClick(this.props.post.data);
+    },
     render: function() {
-        var post = this.props.post.data;
+        var post = this.props.post.data
+            , cx = React.addons.classSet
+            , classes = cx({
+                'post': true,
+                'active': post.id == this.props.activePost.id
+            });
+
         return (
-            React.DOM.div( {className:"post"}, 
+            React.DOM.div( {className:classes, onClick:this.onClick}, 
                 React.DOM.span( {className:"id"}, this.props.id),
                 React.DOM.span( {className:"score"}, post.score),
                 React.DOM.img( {className:"thumb", src:post.thumbnail}),
@@ -103,6 +121,38 @@ var Sort = React.createClass({displayName: 'Sort',
     }
 });
 /** @jsx React.DOM */
+var SubredditSearch = React.createClass({displayName: 'SubredditSearch',
+    getInitialState: function() {
+        return {
+            value: this.props.title || 'all'
+        };
+    },
+    onSubmit: function() {
+        this.refs.searchInput.getDOMNode().blur();
+        reddit.fetch(this.state.value);
+
+        return false;
+    },
+    onChange: function(event) {
+        this.setState({
+            value: event.target.value
+        });
+    },
+    render: function() {
+        var value = this.state.value;
+        return (
+            React.DOM.form( {className:"form-inline", onSubmit:this.onSubmit}, 
+                React.DOM.div( {className:"input-group"}, 
+                    React.DOM.input( {ref:"searchInput", type:"text", className:"form-control", value:value, onChange:this.onChange} ),
+                    React.DOM.div( {className:"input-group-btn"}, 
+                        React.DOM.button( {type:"submit", onClick:this.onSubmit, className:"btn btn-primary"}, "Go")
+                    )
+                )
+            )
+        );
+    }
+});
+/** @jsx React.DOM */
 var reddit = (function(api) {
     var app = {};
 
@@ -116,6 +166,11 @@ var reddit = (function(api) {
                 React.renderComponent(
                     PostList( {posts:posts} ),
                     document.getElementById('Main')
+                );
+
+                React.renderComponent(
+                    SubredditSearch(null ),
+                    document.getElementById('SubredditSearch')
                 );
 
                 React.renderComponent(
