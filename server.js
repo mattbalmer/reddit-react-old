@@ -5,9 +5,9 @@ var express = require('express'),
     fs = require('fs'),
     config = require('config');
 
-var app = express();
+var app = express(), port = process.env.PORT || config.port;
 
-app.set('port', config.port);
+app.set('port', port);
 app.set('view engine', 'jade' );
 app.set('views', __dirname + '/app/views' );
 
@@ -32,6 +32,6 @@ app.use(express.static(__dirname + '/public'));
 //==================
 // Start Server
 //==================
-app.listen(config.port, function () {
-    console.log("Express server listening on port %d", config.port);
+app.listen(port, function () {
+    console.log("Express server listening on port %d", port);
 });
