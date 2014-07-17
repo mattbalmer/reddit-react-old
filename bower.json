@@ -1,8 +1,8 @@
 {
   "name": "react-reddit",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "authors": [
-    "Matt Balmer <signup@mattbalmer.com>"
+    "Matt Balmer <contact@mattbalmer.com>"
   ],
   "description": "Reddit clone in ReactJS",
   "main": "public/index.html",

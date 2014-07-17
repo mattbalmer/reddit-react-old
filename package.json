@@ -1,12 +1,13 @@
 {
     "name": "react-reddit",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "private": true,
     "scripts": {
         "start": "node server",
         "postinstall": "./node_modules/bower/bin/bower install"
     },
     "dependencies": {
+        "bower": "^1.3.8",
         "express": "^4.6.1",
         "jade": "^1.4.0",
         "nib": "^1.0.3",
