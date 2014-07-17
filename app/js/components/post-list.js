@@ -6,7 +6,7 @@ var PostList = React.createClass({
     onTabSelected: function(post) {
         if(this.state.activePost == post)
             post = {};
-        
+
         this.setState({activePost: post});
     },
     render: function() {

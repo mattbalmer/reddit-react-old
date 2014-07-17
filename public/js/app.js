@@ -46,7 +46,7 @@ var PostList = React.createClass({displayName: 'PostList',
     onTabSelected: function(post) {
         if(this.state.activePost == post)
             post = {};
-        
+
         this.setState({activePost: post});
     },
     render: function() {
@@ -70,15 +70,19 @@ var Post = React.createClass({displayName: 'Post',
         var post = this.props.post.data
             , cx = React.addons.classSet
             , classes = cx({
-                'post': true,
-                'active': post.id == this.props.activePost.id
+                post: true,
+                active: post.id == this.props.activePost.id
+            })
+            , thumbClasses = cx({
+                thumb: true,
+                hide: !post.thumbnail
             });
 
         return (
             React.DOM.div( {className:classes, onClick:this.onClick}, 
                 React.DOM.span( {className:"id"}, this.props.id),
                 React.DOM.span( {className:"score"}, post.score),
-                React.DOM.img( {className:"thumb", src:post.thumbnail}),
+                React.DOM.img( {className:thumbClasses, src:post.thumbnail}),
                 React.DOM.section( {className:"details"}, 
                     React.DOM.a( {target:"_blank", href:post.url, className:"title"}, post.title),
                     React.DOM.span( {className:"author"}, post.author),

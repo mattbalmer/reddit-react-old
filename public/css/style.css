@@ -11,10 +11,14 @@ header {
   background: #cee3f8;
   border-bottom: 1px solid #5f99cf;
   min-height: 60px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  box-shadow: 0 5px 5px #fff;
 }
 main {
   padding-left: 2em;
-  padding-top: 10px;
+  padding-top: 70px;
 }
 h1 {
   display: inline-block;
