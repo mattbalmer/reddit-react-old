@@ -7,10 +7,19 @@ var reddit = (function(api) {
 
         api.r(path+'/'+mode)
             .then(function(req) {
-                var posts = req.data.data.children;
+                var posts = req.data.data.children,
+                    currentPost = {},
+                    onPostClick = function(post) {
+                        currentPost = post;
+                    };
 
                 React.renderComponent(
-                    <PostList posts={posts} />,
+                    <PostDetails post={currentPost} />,
+                    document.getElementById('Comments')
+                );
+
+                React.renderComponent(
+                    <PostList posts={posts} onClick={onPostClick}/>,
                     document.getElementById('Main')
                 );
 

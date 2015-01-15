@@ -81,6 +81,9 @@ h1 {
   height: 100%;
   max-width: 80%;
 }
+.post .details > * {
+  margin-right: 5px;
+}
 .post .details .title {
   vertical-align: top;
   display: block;
@@ -91,4 +94,9 @@ h1 {
 .post .details .author {
   display: inline-block;
   margin-top: 1em;
+}
+.post .details .comment-count:before {
+  content: '-';
+  display: inline-block;
+  margin-right: 5px;
 }

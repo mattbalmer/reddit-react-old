@@ -39,24 +39,53 @@ api = (function(){
     return api;
 }());
 /** @jsx React.DOM */
+var PostDetails = React.createClass({displayName: 'PostDetails',
+    getInitialState: function(){
+        return { post: {} }
+    },
+    render: function() {
+        var post = this.props.post.data
+            , json = ''
+            , cx = React.addons.classSet
+            , classes = cx({
+                'post-details': true
+            });
+
+        window.selectPost = function(_post) {
+            console.log('select post', _post, JSON.stringify(_post));
+            post = _post;
+            json = JSON.stringify(post);
+        };
+
+        return (
+            React.DOM.div({className: classes}, 
+                this.props.post.data.title
+            )
+        );
+    }
+});
+/** @jsx React.DOM */
 var PostList = React.createClass({displayName: 'PostList',
     getInitialState: function(){
         return { activePost: {} }
     },
-    onTabSelected: function(post) {
+    onPostSelected: function(post) {
         if(this.state.activePost == post)
             post = {};
 
         this.setState({activePost: post});
+
+        this.props.onClick(post);
+        console.log('post selected', post);
     },
     render: function() {
         var posts = this.props.posts.map(function(post, i) {
-            return Post( {post:post, id:i, onClick:this.onTabSelected, activePost:this.state.activePost} )
+            return Post({post: post, id: i+1, onClick: this.onPostSelected, activePost: this.state.activePost})
         }, this);
 
         return (
-            React.DOM.section( {className:"posts"}, 
-                 posts 
+            React.DOM.section({className: "posts"}, 
+                posts 
             )
         );
     }
@@ -64,7 +93,31 @@ var PostList = React.createClass({displayName: 'PostList',
 /** @jsx React.DOM */
 var Post = React.createClass({displayName: 'Post',
     onClick: function() {
+        window.selectPost(this.props.post);
         this.props.onClick(this.props.post.data);
+    },
+    timeAgo: function(utc) {
+        var millis = Date.now() - (utc * 1000),
+            seconds = parseInt(millis / 1000),
+            minutes = parseInt(seconds / 60),
+            hours = parseInt(minutes / 60),
+            days = parseInt(hours / 24),
+            string = '';
+
+        if(days) {
+            string += days + ' days '
+        }
+        if(hours) {
+            string += hours % 24 + ' hours '
+        }
+        if(!days && !hours && minutes) {
+            string += minutes % 60 + ' minutes '
+        }
+        if(!days && !hours && !minutes && seconds) {
+            string += seconds % 60 + ' seconds '
+        }
+
+        return string + 'ago';
     },
     render: function() {
         var post = this.props.post.data
@@ -79,14 +132,16 @@ var Post = React.createClass({displayName: 'Post',
             });
 
         return (
-            React.DOM.div( {className:classes, onClick:this.onClick}, 
-                React.DOM.span( {className:"id"}, this.props.id),
-                React.DOM.span( {className:"score"}, post.score),
-                React.DOM.img( {className:thumbClasses, src:post.thumbnail}),
-                React.DOM.section( {className:"details"}, 
-                    React.DOM.a( {target:"_blank", href:post.url, className:"title"}, post.title),
-                    React.DOM.span( {className:"author"}, post.author),
-                    React.DOM.span( {className:"comment-count"}, post.num_comments)
+            React.DOM.div({className: classes, onClick: this.onClick}, 
+                React.DOM.span({className: "id"}, this.props.id), 
+                React.DOM.span({className: "score"}, post.score), 
+                React.DOM.img({className: thumbClasses, src: post.thumbnail}), 
+                React.DOM.section({className: "details"}, 
+                    React.DOM.a({target: "_blank", href: post.url, className: "title"}, post.title), 
+                    React.DOM.span({className: "when"}, "Posted ", this.timeAgo(post.created_utc)), 
+                    React.DOM.span({className: "author"}, "by ", post.author), 
+                    React.DOM.span({className: "subreddit"}, "to /r/", post.subreddit), 
+                    React.DOM.span({className: "comment-count"}, post.num_comments, " comments")
                 )
             )
         );
@@ -106,7 +161,7 @@ var SortOption = React.createClass({displayName: 'SortOption',
             classNames += ' active';
         }
 
-        return React.DOM.button( {type:"button", onClick:this.onClick, className:classNames}, this.props.mode);
+        return React.DOM.button({type: "button", onClick: this.onClick, className: classNames}, this.props.mode);
     }
 });
 /** @jsx React.DOM */
@@ -116,11 +171,11 @@ var Sort = React.createClass({displayName: 'Sort',
             , mode = this.props.mode
             , options = [ 'Hot', 'New', 'Top' ]
             , html = options.map(function(option) {
-                return SortOption( {mode:option, active:option.toLowerCase() == mode.toLowerCase()} )
+                return SortOption({mode: option, active: option.toLowerCase() == mode.toLowerCase()})
             });
 
         return (
-            React.DOM.div( {className:"btn-group"}, html)
+            React.DOM.div({className: "btn-group"}, html)
         );
     }
 });
@@ -145,11 +200,11 @@ var SubredditSearch = React.createClass({displayName: 'SubredditSearch',
     render: function() {
         var value = this.state.value;
         return (
-            React.DOM.form( {className:"form-inline", onSubmit:this.onSubmit}, 
-                React.DOM.div( {className:"input-group"}, 
-                    React.DOM.input( {ref:"searchInput", type:"text", className:"form-control", value:value, onChange:this.onChange} ),
-                    React.DOM.div( {className:"input-group-btn"}, 
-                        React.DOM.button( {type:"submit", onClick:this.onSubmit, className:"btn btn-primary"}, "Go")
+            React.DOM.form({className: "form-inline", onSubmit: this.onSubmit}, 
+                React.DOM.div({className: "input-group"}, 
+                    React.DOM.input({ref: "searchInput", type: "text", className: "form-control", value: value, onChange: this.onChange}), 
+                    React.DOM.div({className: "input-group-btn"}, 
+                        React.DOM.button({type: "submit", onClick: this.onSubmit, className: "btn btn-primary"}, "Go")
                     )
                 )
             )
@@ -165,20 +220,29 @@ var reddit = (function(api) {
 
         api.r(path+'/'+mode)
             .then(function(req) {
-                var posts = req.data.data.children;
+                var posts = req.data.data.children,
+                    currentPost = {},
+                    onPostClick = function(post) {
+                        currentPost = post;
+                    };
 
                 React.renderComponent(
-                    PostList( {posts:posts} ),
+                    PostDetails({post: currentPost}),
+                    document.getElementById('Comments')
+                );
+
+                React.renderComponent(
+                    PostList({posts: posts, onClick: onPostClick}),
                     document.getElementById('Main')
                 );
 
                 React.renderComponent(
-                    SubredditSearch(null ),
+                    SubredditSearch(null),
                     document.getElementById('SubredditSearch')
                 );
 
                 React.renderComponent(
-                    Sort( {mode:mode} ),
+                    Sort({mode: mode}),
                     document.getElementById('SortOptions')
                 );
             });
