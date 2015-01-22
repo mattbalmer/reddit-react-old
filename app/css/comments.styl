@@ -1,0 +1,89 @@
+#Comments .post-details
+    position fixed
+    top 61px
+    right -60%
+    width 60%
+    height calc(100% - 61px)
+    border-left 1px solid #ccc
+    background #fff
+    box-shadow -3px 0 5px rgba(#000, .3)
+    transition right .3s ease-in-out
+    padding 25px
+    box-sizing border-box
+    overflow-y auto
+
+    &.active
+        right 0
+
+    .post-meta-info
+        margin-bottom 1em
+
+    .title
+        display block
+        margin 0 0 .5em
+        font-weight bold
+        vertical-align top
+        font-size 28px
+        line-height 1.2
+        margin-top -6px
+
+    .when, .author
+        margin-right 5px
+
+    .comment
+        padding 1em
+        background #eee
+        border-radius 5px
+        margin-bottom 1em
+        overflow hidden
+
+        .details
+            font-size 12px
+            margin-bottom .5em
+
+            > *
+                margin-right 5px
+
+            .comment-collapse, .comment-expand
+                cursor pointer
+                display none
+
+                &.show
+                    display inline-block
+
+                &:hover
+                    color #000
+
+                &:before
+                    content '['
+                &:after
+                    content ']'
+
+            .comment-collapse
+                display inline-block
+
+            .author
+                font-weight bold
+
+            .when
+                color #999
+                font-style italic
+
+        &.even-tiered
+            background #fafafa
+
+        &.collapsed
+            .comment-collapse
+                display none
+
+            .comment-expand
+                display inline-block
+
+            .body, .replies
+                display none
+                overflow hidden
+
+        .replies
+
+            &.has-replies
+                margin-top 1em

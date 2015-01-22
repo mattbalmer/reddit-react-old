@@ -1,7 +1,17 @@
 /** @jsx React.DOM */
 var PostList = React.createClass({
     getInitialState: function(){
-        return { activePost: {} }
+        return { activePost: {}, posts: [] }
+    },
+    componentDidMount: function() {
+        var component = this;
+
+        this.unsubscribe = reddit.on('postsRefreshed', function(posts) {
+            component.setState({ posts: posts });
+        });
+    },
+    componentWillUnmount: function() {
+        this.unsubscribe();
     },
     onPostSelected: function(post) {
         if(this.state.activePost == post)
@@ -9,17 +19,17 @@ var PostList = React.createClass({
 
         this.setState({activePost: post});
 
-        this.props.onClick(post);
-        console.log('post selected', post);
+        reddit.trigger('postSelected', post);
     },
-    render: function() {
-        var posts = this.props.posts.map(function(post, i) {
+    mapPosts: function(posts) {
+        return posts.map(function(post, i) {
             return <Post post={post} id={i+1} onClick={this.onPostSelected} activePost={this.state.activePost} />
         }, this);
-
+    },
+    render: function() {
         return (
             <section className='posts'>
-                { posts }
+                { this.mapPosts(this.state.posts) }
             </section>
         );
     }

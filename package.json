@@ -1,9 +1,9 @@
 {
     "name": "react-reddit",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "private": true,
     "scripts": {
-        "start": "node server",
+        "start": "NODE_PATH=lib supervisor server",
         "postinstall": "./node_modules/bower/bin/bower install"
     },
     "dependencies": {

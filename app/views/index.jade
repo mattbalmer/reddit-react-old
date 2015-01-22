@@ -5,13 +5,17 @@ html
 
         link(rel='stylesheet', href='vendor/bootstrap/dist/css/bootstrap.min.css')
         script(src='vendor/q/q.js')
-        script(src='vendor/rxjs/dist/rx.all.min.js')
-        script(src='vendor/react/react-with-addons.min.js')
+        script(src='vendor/rxjs/dist/rx.all.js')
+        script(src='vendor/react/react-with-addons.js')
 
         link(rel='stylesheet', href='css/style.css')
-        script(src='js/app.min.js')
+        script(src='js/app.js')
 
     body
         include blocks/header
 
         include blocks/posts
+
+        script.
+            reddit.render('hot', {});
+            reddit.fetch('all');

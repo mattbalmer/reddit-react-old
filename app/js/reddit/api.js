@@ -1,4 +1,4 @@
-api = (function(){
+reddit.api = (function(reddit){
     var api = {};
 
     api.request = function(path) {
@@ -36,5 +36,10 @@ api = (function(){
         return api.request('/r/'+subapi);
     };
 
+    api.comments = function(post) {
+        var path = '/r/' + post.subreddit + '/comments/' + post.id;
+        return api.request(path);
+    };
+
     return api;
-}());
+}(reddit));

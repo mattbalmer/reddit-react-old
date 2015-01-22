@@ -1,6 +1,13 @@
 var routes = module.exports = require('express').Router()
     , request = require('request');
 
+
+routes.get('/r/:r/comments/:id', function(req, res) {
+    request('http://reddit.com/r/' + req.params.r + '/comments/' + req.params.id + '.json', function(error, response, body) {
+        res.send(response.statusCode, error || body);
+    });
+});
+
 routes.get('/r/:r/:mode', function(req, res) {
     request('http://reddit.com/r/' + req.params.r + '/' + req.params.mode + '.json', function(error, response, body) {
         res.send(response.statusCode, error || body);

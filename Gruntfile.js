@@ -4,7 +4,11 @@ module.exports = function(grunt) {
         react: {
             compile: {
                 files: {
-                    'public/js/app.js': 'app/js/**/*.js'
+                    'public/js/app.js': [
+                        'app/js/reddit/reddit.js',
+                        'app/js/reddit/*.js',
+                        'app/js/components/**/*.js'
+                    ]
                 }
             }
         },
@@ -21,7 +25,7 @@ module.exports = function(grunt) {
         watch: {
             js: {
                 files: 'app/js/**/*.js',
-                tasks: ['react', 'uglify']
+                tasks: ['react']
             }
         }
     });
@@ -30,6 +34,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-react');
 
-    grunt.registerTask('compile', ['react', 'uglify']);
+    grunt.registerTask('compile', ['react']);
     grunt.registerTask('default', ['compile', 'watch']);
 };
