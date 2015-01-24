@@ -1,12 +1,15 @@
-/** @jsx React.DOM */
-var PostList = React.createClass({
+var React = require('react/addons'),
+    reddit = require('../reddit'),
+    Post = require('./post');
+
+module.exports = React.createClass({
     getInitialState: function(){
         return { activePost: {}, posts: [] }
     },
     componentDidMount: function() {
         var component = this;
 
-        this.unsubscribe = reddit.on('postsRefreshed', function(posts) {
+        this.unsubscribe = reddit.events.on('postsRefreshed', function(posts) {
             component.setState({ posts: posts });
         });
     },
@@ -19,7 +22,7 @@ var PostList = React.createClass({
 
         this.setState({activePost: post});
 
-        reddit.trigger('postSelected', post);
+        reddit.events.trigger('postSelected', post);
     },
     mapPosts: function(posts) {
         return posts.map(function(post, i) {

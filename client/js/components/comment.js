@@ -1,5 +1,7 @@
-/** @jsx React.DOM */
-var Comment = React.createClass({
+var React = require('react/addons'),
+    reddit = require('../reddit');
+
+module.exports = Comment = React.createClass({
     getInitialState: function() {
         return { collapsed: false };
     },

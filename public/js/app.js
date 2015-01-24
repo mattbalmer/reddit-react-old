@@ -1,149 +1,143 @@
-/** @jsx React.DOM */
-var reddit = (function() {
-    var reddit = {};
+var Q = require('q');
 
-    reddit.fetch = function(path, mode) {
-        mode = mode || 'hot';
+var request = function(path) {
+    var req = new XMLHttpRequest()
+        , deferred = Q.defer();
 
-        reddit.api.r(path+'/'+mode)
-            .then(function(req) {
-                reddit.trigger('postsRefreshed', req.data.data.children);
-                //reddit.update({
-                //    mode: 'hot',
-                //    posts: req.data.data.children
-                //});
-            });
-    };
+    req.open('GET', path, true);
 
-    reddit.render = function(mode, posts) {
-        React.renderComponent(
-            PostDetails(null),
-            document.getElementById('Comments')
-        );
-
-        React.renderComponent(
-            PostList({posts: posts}),
-            document.getElementById('Main')
-        );
-
-        React.renderComponent(
-            SubredditSearch(null),
-            document.getElementById('SubredditSearch')
-        );
-
-        React.renderComponent(
-            Sort({mode: mode}),
-            document.getElementById('SortOptions')
-        );
-    };
-
-    return reddit;
-}());
-
-if(typeof global !== 'undefined')
-    global.reddit = reddit;
-reddit.api = (function(reddit){
-    var api = {};
-
-    api.request = function(path) {
-        var req = new XMLHttpRequest()
-            , deferred = Q.defer();
-
-        req.open('GET', path, true);
-
-        req.onload = function() {
-            if (req.status >= 200 && req.status < 400) {
-                try {
-                    var data = JSON.parse(req.responseText);
-                    req.data = data;
-                } catch(e) {
-                    req.data = {};
-                }
-
-                deferred.resolve(req);
-            } else {
+    req.onload = function() {
+        if (req.status >= 200 && req.status < 400) {
+            try {
+                req.data = JSON.parse(req.responseText);
+            } catch(e) {
                 req.data = {};
-                deferred.reject(req);
             }
-        };
 
-        req.onerror = function() {
-            deferred.reject(req);
-        };
-
-        req.send();
-
-        return deferred.promise;
-    };
-
-    api.r = function(subapi) {
-        return api.request('/r/'+subapi);
-    };
-
-    api.comments = function(post) {
-        var path = '/r/' + post.subreddit + '/comments/' + post.id;
-        return api.request(path);
-    };
-
-    return api;
-}(reddit));
-(function(reddit){
-    var eventListeners = {};
-
-    reddit.on = function(event, callback) {
-        if(!eventListeners.hasOwnProperty(event)) {
-            eventListeners[event] = [];
-        }
-        eventListeners[event].push(callback);
-
-        return function() {
-            eventListeners.remove(callback);
-        }
-    };
-
-    reddit.trigger = function(event) {
-        var args = Array.prototype.slice.call(arguments, 1);
-
-        if(!eventListeners.hasOwnProperty(event)) {
-            console.error('No event listeners registered for event: %s', event);
+            deferred.resolve(req);
         } else {
-            eventListeners[event].forEach(function(callback) {
-                callback.apply(null, args);
-            })
+            req.data = {};
+            deferred.reject(req);
         }
     };
-}(reddit));
-reddit.utils = (function(reddit){
-    var utils = {};
 
-    utils.timeAgo = function(utc) {
-        var millis = Date.now() - (utc * 1000),
-            seconds = parseInt(millis / 1000),
-            minutes = parseInt(seconds / 60),
-            hours = parseInt(minutes / 60),
-            days = parseInt(hours / 24),
-            string = '';
-
-        if(days) {
-            string += days + ' days '
-        }
-        if(hours) {
-            string += hours % 24 + ' hours '
-        }
-        if(!days && !hours && minutes) {
-            string += minutes % 60 + ' minutes '
-        }
-        if(!days && !hours && !minutes && seconds) {
-            string += seconds % 60 + ' seconds '
-        }
-
-        return string + 'ago';
+    req.onerror = function() {
+        deferred.reject(req);
     };
 
-    return utils;
-}(reddit));
+    req.send();
+
+    return deferred.promise;
+};
+
+var api = module.exports = {};
+
+api.r = function(subapi) {
+    return request('/r/'+subapi);
+};
+
+api.comments = function(post) {
+    var path = '/r/' + post.subreddit + '/comments/' + post.id;
+    return request(path);
+};
+var events = module.exports = {};
+
+events.eventListeners = {};
+
+events.on = function(event, callback) {
+    if(!events.eventListeners.hasOwnProperty(event)) {
+        events.eventListeners[event] = [];
+    }
+    events.eventListeners[event].push(callback);
+
+    return function() {
+        events.eventListeners.remove(callback);
+    }
+};
+
+events.trigger = function(event) {
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    if(!events.eventListeners.hasOwnProperty(event)) {
+        console.error('No event listeners registered for event: %s', event);
+    } else {
+        events.eventListeners[event].forEach(function(callback) {
+            callback.apply(null, args);
+        })
+    }
+};
+var reddit = module.exports = {};
+
+reddit.api = require('./api');
+reddit.events = require('./events');
+reddit.utils = require('./utils');
+reddit.render = require('./render');
+
+reddit.fetch = function(path, mode) {
+    mode = mode || 'hot';
+
+    reddit.api.r(path+'/'+mode)
+        .then(function(req) {
+            reddit.events.trigger('postsRefreshed', req.data.data.children);
+        });
+};
 /** @jsx React.DOM */
-var Comment = React.createClass({displayName: 'Comment',
+var React = require('react'),
+    PostDetails = require('../components/post-details'),
+    PostList = require('../components/post-list'),
+    SubredditSearch = require('../components/subreddit-search'),
+    Sort = require('../components/sort-options-list');
+
+var render = module.exports = function(mode, posts) {
+    React.render(
+        PostDetails(null),
+        document.getElementById('Comments')
+    );
+
+    React.render(
+        PostList({posts: posts}),
+        document.getElementById('Main')
+    );
+
+    React.render(
+        SubredditSearch(null),
+        document.getElementById('SubredditSearch')
+    );
+
+    React.render(
+        Sort({mode: mode}),
+        document.getElementById('SortOptions')
+    );
+};
+var utils = module.exports = {};
+
+utils.timeAgo = function(utc) {
+    var millis = Date.now() - (utc * 1000),
+        seconds = parseInt(millis / 1000),
+        minutes = parseInt(seconds / 60),
+        hours = parseInt(minutes / 60),
+        days = parseInt(hours / 24),
+        string = '';
+
+    if(days) {
+        string += days + ' days '
+    }
+    if(hours) {
+        string += hours % 24 + ' hours '
+    }
+    if(!days && !hours && minutes) {
+        string += minutes % 60 + ' minutes '
+    }
+    if(!days && !hours && !minutes && seconds) {
+        string += seconds % 60 + ' seconds '
+    }
+
+    return string + 'ago';
+};
+var React = require('react/addons'),
+    reddit = require('../reddit');
+
+module.exports = Comment = React.createClass({
     getInitialState: function() {
         return { collapsed: false };
     },
@@ -166,7 +160,7 @@ var Comment = React.createClass({displayName: 'Comment',
     mapChildren: function(replies) {
         if(!this.hasReplies()) return [];
         return replies.data.children.map(function(comment, i) {
-            return Comment({comment: comment, id: i+1, level: this.props.level + 1})
+            return <Comment comment={comment} id={i+1} level={this.props.level + 1} />
         }, this)
     },
     render: function() {
@@ -182,31 +176,34 @@ var Comment = React.createClass({displayName: 'Comment',
             });
 
         return (
-            React.DOM.div({className: classes}, 
-                React.DOM.div({className: "details"}, 
-                    React.DOM.span({className: "comment-collapse", onClick: this.collapseComment}, "-"), 
-                    React.DOM.span({className: "comment-expand", onClick: this.expandComment}, "+"), 
-                    React.DOM.span({className: "author"}, this.props.comment.data.author), 
-                    React.DOM.span({className: "score"}, this.props.comment.data.score, " points"), 
-                    React.DOM.span({className: "when"}, reddit.utils.timeAgo(this.props.comment.data.created_utc))
-                ), 
-                React.DOM.span({className: "body"}, this.props.comment.data.body), 
-                React.DOM.div({className: repliesClasses}, 
-                    this.mapChildren(this.props.comment.data.replies)
-                )
-            )
+            <div className={classes}>
+                <div className='details'>
+                    <span className='comment-collapse' onClick={this.collapseComment}>-</span>
+                    <span className='comment-expand' onClick={this.expandComment}>+</span>
+                    <span className='author'>{this.props.comment.data.author}</span>
+                    <span className='score'>{this.props.comment.data.score} points</span>
+                    <span className='when'>{reddit.utils.timeAgo(this.props.comment.data.created_utc)}</span>
+                </div>
+                <span className='body'>{this.props.comment.data.body}</span>
+                <div className={repliesClasses}>
+                    {this.mapChildren(this.props.comment.data.replies)}
+                </div>
+            </div>
         );
     }
 });
-/** @jsx React.DOM */
-var PostDetails = React.createClass({displayName: 'PostDetails',
+var React = require('react/addons'),
+    reddit = require('../reddit'),
+    Comment = require('./comment');
+
+module.exports = React.createClass({
     getInitialState: function(){
         return { post: {}, comments: [] }
     },
     componentDidMount: function() {
         var component = this;
 
-        this.unsubscribe = reddit.on('postSelected', function(post) {
+        this.unsubscribe = reddit.events.on('postSelected', function(post) {
             var active = Object.keys(post).length > 0;
             component.setState({ post: post });
             component.setState({ active: active });
@@ -229,7 +226,7 @@ var PostDetails = React.createClass({displayName: 'PostDetails',
     },
     mapComments: function(comments) {
         return comments.map(function(comment, i) {
-            return Comment({comment: comment, id: i+1, level: 1})
+            return <Comment comment={comment} id={i+1} level={1} />
         }, this);
     },
     render: function() {
@@ -240,31 +237,34 @@ var PostDetails = React.createClass({displayName: 'PostDetails',
             });
 
         return (
-            React.DOM.div({className: classes}, 
-                React.DOM.div({className: "post-container"}, 
-                    React.DOM.section({className: "post-meta-info"}, 
-                        React.DOM.span({className: "title"}, this.state.post.title), 
-                        React.DOM.span({className: "when"}, "Posted ", reddit.utils.timeAgo(this.state.post.created_utc)), 
-                        React.DOM.span({className: "author"}, "by ", this.state.post.author), 
-                        React.DOM.span({className: "subreddit"}, "to /r/", this.state.post.subreddit)
-                    ), 
-                    React.DOM.section({className: "comments"}, 
-                        this.mapComments(this.state.comments)
-                    )
-                )
-            )
+            <div className={classes}>
+                <div className='post-container'>
+                    <section className='post-meta-info'>
+                        <span className='title'>{this.state.post.title}</span>
+                        <span className='when'>Posted {reddit.utils.timeAgo(this.state.post.created_utc)}</span>
+                        <span className='author'>by {this.state.post.author}</span>
+                        <span className='subreddit'>to /r/{this.state.post.subreddit}</span>
+                    </section>
+                    <section className='comments'>
+                        {this.mapComments(this.state.comments)}
+                    </section>
+                </div>
+            </div>
         );
     }
 });
-/** @jsx React.DOM */
-var PostList = React.createClass({displayName: 'PostList',
+var React = require('react/addons'),
+    reddit = require('../reddit'),
+    Post = require('./post');
+
+module.exports = React.createClass({
     getInitialState: function(){
         return { activePost: {}, posts: [] }
     },
     componentDidMount: function() {
         var component = this;
 
-        this.unsubscribe = reddit.on('postsRefreshed', function(posts) {
+        this.unsubscribe = reddit.events.on('postsRefreshed', function(posts) {
             component.setState({ posts: posts });
         });
     },
@@ -277,23 +277,25 @@ var PostList = React.createClass({displayName: 'PostList',
 
         this.setState({activePost: post});
 
-        reddit.trigger('postSelected', post);
+        reddit.events.trigger('postSelected', post);
     },
     mapPosts: function(posts) {
         return posts.map(function(post, i) {
-            return Post({post: post, id: i+1, onClick: this.onPostSelected, activePost: this.state.activePost})
+            return <Post post={post} id={i+1} onClick={this.onPostSelected} activePost={this.state.activePost} />
         }, this);
     },
     render: function() {
         return (
-            React.DOM.section({className: "posts"}, 
-                 this.mapPosts(this.state.posts) 
-            )
+            <section className='posts'>
+                { this.mapPosts(this.state.posts) }
+            </section>
         );
     }
 });
-/** @jsx React.DOM */
-var Post = React.createClass({displayName: 'Post',
+var React = require('react/addons'),
+    reddit = require('../reddit');
+
+module.exports = React.createClass({
     onClick: function() {
         this.props.onClick(this.props.post.data);
     },
@@ -310,23 +312,25 @@ var Post = React.createClass({displayName: 'Post',
             });
 
         return (
-            React.DOM.div({className: classes, onClick: this.onClick}, 
-                React.DOM.span({className: "id"}, this.props.id), 
-                React.DOM.span({className: "score"}, post.score), 
-                React.DOM.img({className: thumbClasses, src: post.thumbnail}), 
-                React.DOM.section({className: "details"}, 
-                    React.DOM.a({target: "_blank", href: post.url, className: "title"}, post.title), 
-                    React.DOM.span({className: "when"}, "Posted ", reddit.utils.timeAgo(post.created_utc)), 
-                    React.DOM.span({className: "author"}, "by ", post.author), 
-                    React.DOM.span({className: "subreddit"}, "to /r/", post.subreddit), 
-                    React.DOM.span({className: "comment-count"}, post.num_comments, " comments")
-                )
-            )
+            <div className={classes} onClick={this.onClick}>
+                <span className='id'>{this.props.id}</span>
+                <span className='score'>{post.score}</span>
+                <img className={thumbClasses} src={post.thumbnail}/>
+                <section className='details'>
+                    <a target='_blank' href={post.url} className='title'>{post.title}</a>
+                    <span className='when'>Posted {reddit.utils.timeAgo(post.created_utc)}</span>
+                    <span className='author'>by {post.author}</span>
+                    <span className='subreddit'>to /r/{post.subreddit}</span>
+                    <span className='comment-count'>{post.num_comments} comments</span>
+                </section>
+            </div>
         );
     }
 });
-/** @jsx React.DOM */
-var SortOption = React.createClass({displayName: 'SortOption',
+var React = require('react/addons'),
+    reddit = require('../reddit');
+
+module.exports = React.createClass({
     onClick: function(event) {
         console.log('CLICK!', this.props.mode);
         reddit.fetch('all', this.props.mode.toLowerCase())
@@ -339,26 +343,30 @@ var SortOption = React.createClass({displayName: 'SortOption',
             classNames += ' active';
         }
 
-        return React.DOM.button({type: "button", onClick: this.onClick, className: classNames}, this.props.mode);
+        return <button type='button' onClick={this.onClick} className={classNames}>{this.props.mode}</button>;
     }
 });
-/** @jsx React.DOM */
-var Sort = React.createClass({displayName: 'Sort',
+var React = require('react'),
+    SortOption = require('./sort-option');
+
+module.exports = React.createClass({
     render: function() {
         var cs = React.addons.classSet
             , mode = this.props.mode
             , options = [ 'Hot', 'New', 'Top' ]
             , html = options.map(function(option) {
-                return SortOption({mode: option, active: option.toLowerCase() == mode.toLowerCase()})
+                return <SortOption mode={option} active={option.toLowerCase() == mode.toLowerCase()} />
             });
 
         return (
-            React.DOM.div({className: "btn-group"}, html)
+            <div className='btn-group'>{html}</div>
         );
     }
 });
-/** @jsx React.DOM */
-var SubredditSearch = React.createClass({displayName: 'SubredditSearch',
+var React = require('react/addons'),
+    reddit = require('../reddit');
+
+module.exports = React.createClass({
     getInitialState: function() {
         return {
             value: this.props.title || 'all'
@@ -378,14 +386,14 @@ var SubredditSearch = React.createClass({displayName: 'SubredditSearch',
     render: function() {
         var value = this.state.value;
         return (
-            React.DOM.form({className: "form-inline", onSubmit: this.onSubmit}, 
-                React.DOM.div({className: "input-group"}, 
-                    React.DOM.input({ref: "searchInput", type: "text", className: "form-control", value: value, onChange: this.onChange}), 
-                    React.DOM.div({className: "input-group-btn"}, 
-                        React.DOM.button({type: "submit", onClick: this.onSubmit, className: "btn btn-primary"}, "Go")
-                    )
-                )
-            )
+            <form className='form-inline' onSubmit={this.onSubmit}>
+                <div className='input-group'>
+                    <input ref='searchInput' type='text' className='form-control' value={value} onChange={this.onChange} />
+                    <div className='input-group-btn'>
+                        <button type='submit' onClick={this.onSubmit} className='btn btn-primary'>Go</button>
+                    </div>
+                </div>
+            </form>
         );
     }
 });

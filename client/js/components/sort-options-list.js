@@ -1,5 +1,7 @@
-/** @jsx React.DOM */
-var Sort = React.createClass({
+var React = require('react'),
+    SortOption = require('./sort-option');
+
+module.exports = React.createClass({
     render: function() {
         var cs = React.addons.classSet
             , mode = this.props.mode

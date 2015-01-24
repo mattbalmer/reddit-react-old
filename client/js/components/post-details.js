@@ -1,12 +1,15 @@
-/** @jsx React.DOM */
-var PostDetails = React.createClass({
+var React = require('react/addons'),
+    reddit = require('../reddit'),
+    Comment = require('./comment');
+
+module.exports = React.createClass({
     getInitialState: function(){
         return { post: {}, comments: [] }
     },
     componentDidMount: function() {
         var component = this;
 
-        this.unsubscribe = reddit.on('postSelected', function(post) {
+        this.unsubscribe = reddit.events.on('postSelected', function(post) {
             var active = Object.keys(post).length > 0;
             component.setState({ post: post });
             component.setState({ active: active });

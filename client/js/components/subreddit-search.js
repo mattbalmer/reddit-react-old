@@ -1,5 +1,7 @@
-/** @jsx React.DOM */
-var SubredditSearch = React.createClass({
+var React = require('react/addons'),
+    reddit = require('../reddit');
+
+module.exports = React.createClass({
     getInitialState: function() {
         return {
             value: this.props.title || 'all'

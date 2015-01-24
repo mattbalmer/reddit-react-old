@@ -1,5 +1,7 @@
-/** @jsx React.DOM */
-var SortOption = React.createClass({
+var React = require('react/addons'),
+    reddit = require('../reddit');
+
+module.exports = React.createClass({
     onClick: function(event) {
         console.log('CLICK!', this.props.mode);
         reddit.fetch('all', this.props.mode.toLowerCase())

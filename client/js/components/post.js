@@ -1,5 +1,7 @@
-/** @jsx React.DOM */
-var Post = React.createClass({
+var React = require('react/addons'),
+    reddit = require('../reddit');
+
+module.exports = React.createClass({
     onClick: function() {
         this.props.onClick(this.props.post.data);
     },
