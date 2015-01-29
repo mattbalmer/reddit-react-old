@@ -1,6 +1,6 @@
 {
   "name": "react-reddit",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "start": "NODE_PATH=lib supervisor -w server/ server/server.js",
