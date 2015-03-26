@@ -1,11 +1,14 @@
 var gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     concat = require('gulp-concat'),
+    rename = require('gulp-rename'),
     browserify = require('browserify'),
-    reactify = require('reactify'),
+    babelify = require('babelify'),
+    through2 = require('through2'),
     jade = require('gulp-jade'),
     stylus = require('gulp-stylus'),
-    nib = require('nib');
+    nib = require('nib'),
+    babel = require('babel');
 
 var paths = {
     source: {
@@ -40,11 +43,25 @@ gulp.task('css', function() {
         .pipe(gulp.dest(paths.dest.css));
 });
 gulp.task('js', function() {
-    return browserify(paths.source.app_js)
-        .transform(reactify)
-        .bundle()
-        .pipe(source('reddit.js'))
-        .pipe(gulp.dest(paths.dest.js));
+    return gulp.src(paths.source.app_js)
+        .pipe(through2.obj(function(file, enc, next) {
+            browserify(file.path, {debug: true})
+                .transform(babelify)
+                .bundle(function(err, res) {
+                    if(err) {return next(err);}
+
+                    file.contents = res;
+                    next(null, file);
+                });
+        }))
+        .on('error', function(error) {
+            console.log(error.stack);
+            this.emit('end');
+        })
+        .pipe(rename('reddit.js'))
+        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./dist/js/'));
 });
 gulp.task('watch', function() {
     gulp.watch(paths.source.css, ['css']);

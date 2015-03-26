@@ -3,7 +3,8 @@
   "version": "0.0.3",
   "private": true,
   "scripts": {
-    "start": "NODE_PATH=lib supervisor -w server/ server/server.js",
+    "_start": "NODE_PATH=lib supervisor -w server/ server/server.js",
+    "start": "NODE_PATH=lib babel-node server/server.js",
     "postinstall": "./node_modules/bower/bin/bower install"
   },
   "dependencies": {
@@ -15,7 +16,10 @@
     "stylus": "^0.47.1",
     "request-caching": "0.0.1",
     "lru-cache": "~2.5.0",
-    "memory-cache": "0.0.5"
+    "memory-cache": "0.0.5",
+    "react": "~0.13.1",
+    "fluxible": "~0.3.1",
+    "babel": "~4.7.16"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -32,6 +36,9 @@
     "react": "~0.12.2",
     "q": "~1.1.2",
     "rx": "~2.3.24",
-    "gulp-concat": "~2.4.3"
+    "gulp-concat": "~2.4.3",
+    "babelify": "~5.0.4",
+    "through2": "~0.6.3",
+    "gulp-rename": "~1.2.0"
   }
 }
