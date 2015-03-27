@@ -1,3 +1,4 @@
+import request from 'request';
 import express from 'express';
 import proxy from 'proxy';
 import React from 'react';
@@ -13,12 +14,18 @@ routes.get('/r/:r/:mode',
 routes.get('/r/:r',
     proxy.to('http://reddit.com/r/:r.json'));
 
-//routes.get('/', (req, res) => {
-//    var Hello = require('./components/hello.js');
-//
-//    res.render('index', {
-//        content: React.renderToString(<Hello/>)
-//    });
-//});
+routes.get('/', (req, res) => {
+    var App = require('components/app.js');
+
+    request('http://reddit.com/r/all.json', function(error, response, body) {
+        if(response.statusCode == 200 && !error && body) {
+            var posts = body.data.children;
+
+            res.render('index', {
+                content: React.renderToString(<App posts={posts} />)
+            });
+        }
+    });
+});
 
 export default routes

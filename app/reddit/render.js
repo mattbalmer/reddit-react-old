@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var React = require('react'),
     PostDetails = require('../components/post-details'),
     PostList = require('../components/post-list'),

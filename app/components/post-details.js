@@ -1,12 +1,13 @@
-var React = require('react/addons'),
-    reddit = require('../reddit'),
-    Comment = require('./comment');
+import React from 'react/addons';
+import reddit from '../reddit';
+import Comment from './comment';
 
-module.exports = React.createClass({
-    getInitialState: function(){
-        return { post: {}, comments: [] }
-    },
-    componentDidMount: function() {
+export default class PostDetails extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { post: {}, comments: [] }
+    }
+    componentDidMount() {
         var component = this;
 
         this.unsubscribe = reddit.events.on('postSelected', function(post) {
@@ -26,16 +27,16 @@ module.exports = React.createClass({
                     })
             }
         });
-    },
-    componentWillUnmount: function() {
+    }
+    componentWillUnmount() {
         this.unsubscribe();
-    },
-    mapComments: function(comments) {
+    }
+    mapComments(comments) {
         return comments.map(function(comment, i) {
             return <Comment comment={comment} id={i+1} level={1} />
         }, this);
-    },
-    render: function() {
+    }
+    render() {
         var cx = React.addons.classSet
             , classes = cx({
                 'post-details': true,
@@ -58,4 +59,4 @@ module.exports = React.createClass({
             </div>
         );
     }
-});
+}

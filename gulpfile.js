@@ -2,13 +2,13 @@ var gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     concat = require('gulp-concat'),
     rename = require('gulp-rename'),
+    sourcemaps = require('gulp-sourcemaps'),
     browserify = require('browserify'),
     babelify = require('babelify'),
     through2 = require('through2'),
     jade = require('gulp-jade'),
     stylus = require('gulp-stylus'),
-    nib = require('nib'),
-    babel = require('babel');
+    nib = require('nib');
 
 var paths = {
     source: {

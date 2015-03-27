@@ -1,17 +1,17 @@
-var React = require('react'),
-    SortOption = require('./sort-option');
+import React from 'react';
+import SortOption from './sort-option';
 
-module.exports = React.createClass({
-    render: function() {
+export default class SortOptionsList {
+    render() {
         var cs = React.addons.classSet
-            , mode = this.props.mode
+            , mode = this.props.mode || 'hot'
             , options = [ 'Hot', 'New', 'Top' ]
             , html = options.map(function(option) {
                 return <SortOption mode={option} active={option.toLowerCase() == mode.toLowerCase()} />
             });
 
         return (
-            <div className='btn-group'>{html}</div>
+            <div className='sort-options btn-group'>{html}</div>
         );
     }
-});
+}

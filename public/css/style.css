@@ -19,7 +19,7 @@ header {
   -webkit-box-shadow: 0 5px 5px #fff;
   box-shadow: 0 5px 5px #fff;
 }
-main {
+#main {
   padding-left: 2em;
   padding-top: 70px;
 }
@@ -135,21 +135,21 @@ h1 {
   text-indent: 0.5em;
   vertical-align: middle;
 }
-#SubredditSearch {
+.subreddit-search {
   display: inline-block;
   margin-left: 20px;
   vertical-align: middle;
   white-space: nowrap;
 }
-#SubredditSearch input {
+.subreddit-search input {
   display: inline-block;
   vertical-align: middle;
   margin-right: 10px;
 }
-#SubredditSearch button {
+.subreddit-search button {
   vertical-align: middle;
 }
-#SortOptions {
+.sort-options {
   display: inline-block;
   margin-left: 20px;
   vertical-align: middle;

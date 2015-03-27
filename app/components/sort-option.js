@@ -1,12 +1,11 @@
-var React = require('react/addons'),
-    reddit = require('../reddit');
+import React from 'react/addons';
+import reddit from '../reddit';
 
-module.exports = React.createClass({
-    onClick: function(event) {
-        console.log('CLICK!', this.props.mode);
+export default class SortOption extends React.Component {
+    onClick(event) {
         reddit.fetch('all', this.props.mode.toLowerCase())
-    },
-    render: function() {
+    }
+    render() {
         var mode = this.props.mode.toLowerCase()
             , classNames = mode + ' btn btn-default';
 
@@ -16,4 +15,4 @@ module.exports = React.createClass({
 
         return <button type='button' onClick={this.onClick} className={classNames}>{this.props.mode}</button>;
     }
-});
+}

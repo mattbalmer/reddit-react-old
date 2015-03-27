@@ -1,33 +1,12 @@
-var React = require('react/addons'),
-    reddit = require('../reddit');
+import React from 'react/addons';
+import reddit from '../reddit';
 
-module.exports = Comment = React.createClass({
-    getInitialState: function() {
-        return { collapsed: false };
-    },
-    collapseComment: function() {
-        console.log('collapse', this.props.comment.data);
-        this.setState({ collapsed: true });
-    },
-    expandComment: function() {
-        console.log('expand', this.props.comment.data);
-        this.setState({ collapsed: false });
-    },
-    json: function() {
-        return JSON.stringify(this.props.comment.data);
-    },
-    hasReplies: function() {
-        var replies = this.props.comment.data.replies;
-        if(typeof replies !== 'object') return false;
-        return replies.data.children.length > 0;
-    },
-    mapChildren: function(replies) {
-        if(!this.hasReplies()) return [];
-        return replies.data.children.map(function(comment, i) {
-            return <Comment comment={comment} id={i+1} level={this.props.level + 1} />
-        }, this)
-    },
-    render: function() {
+export default class Comment extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { collapsed: false };
+    }
+    render() {
         var cx = React.addons.classSet
             , classes = cx({
                 comment: true,
@@ -55,4 +34,29 @@ module.exports = Comment = React.createClass({
             </div>
         );
     }
-});
+
+    // -----
+
+    json() {
+        return JSON.stringify(this.props.comment.data);
+    }
+    collapseComment() {
+        console.log('collapse', this.props.comment.data);
+        this.setState({ collapsed: true });
+    }
+    expandComment() {
+        console.log('expand', this.props.comment.data);
+        this.setState({ collapsed: false });
+    }
+    hasReplies() {
+        var replies = this.props.comment.data.replies;
+        if(typeof replies !== 'object') return false;
+        return replies.data.children.length > 0;
+    }
+    mapChildren(replies) {
+        if(!this.hasReplies()) return [];
+        return replies.data.children.map(function(comment, i) {
+            return <Comment comment={comment} id={i+1} level={this.props.level + 1} />
+        }, this)
+    }
+}

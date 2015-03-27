@@ -1,11 +1,11 @@
-var React = require('react/addons'),
-    reddit = require('../reddit');
+import React from 'react/addons';
+import reddit from '../reddit';
 
-module.exports = React.createClass({
-    onClick: function() {
+export default class Post extends React.Component {
+    onClick() {
         this.props.onClick(this.props.post.data);
-    },
-    render: function() {
+    }
+    render() {
         var post = this.props.post.data
             , cx = React.addons.classSet
             , classes = cx({
@@ -32,4 +32,4 @@ module.exports = React.createClass({
             </div>
         );
     }
-});
+}

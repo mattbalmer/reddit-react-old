@@ -1,27 +1,28 @@
-var React = require('react/addons'),
-    reddit = require('../reddit');
+import React from 'react/addons';
+import reddit from '../reddit';
 
-module.exports = React.createClass({
-    getInitialState: function() {
-        return {
+export default class SubredditSearch extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             value: this.props.title || 'all'
         };
-    },
-    onSubmit: function() {
+    }
+    onSubmit() {
         this.refs.searchInput.getDOMNode().blur();
         reddit.fetch(this.state.value);
 
         return false;
-    },
-    onChange: function(event) {
+    }
+    onChange(event) {
         this.setState({
             value: event.target.value
         });
-    },
-    render: function() {
+    }
+    render() {
         var value = this.state.value;
         return (
-            <form className='form-inline' onSubmit={this.onSubmit}>
+            <form className='subreddit-search form-inline' onSubmit={this.onSubmit}>
                 <div className='input-group'>
                     <input ref='searchInput' type='text' className='form-control' value={value} onChange={this.onChange} />
                     <div className='input-group-btn'>
@@ -31,4 +32,4 @@ module.exports = React.createClass({
             </form>
         );
     }
-});
+}

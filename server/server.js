@@ -4,7 +4,7 @@ import config from 'config';
 
 var app = express();
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '..', 'client'));
 app.set('view engine', 'jade');
 
 app.use( require('./router') );

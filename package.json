@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "_start": "NODE_PATH=lib supervisor -w server/ server/server.js",
-    "start": "NODE_PATH=lib babel-node server/server.js",
+    "start": "NODE_PATH=lib:app babel-node server/server.js",
     "postinstall": "./node_modules/bower/bin/bower install"
   },
   "dependencies": {
@@ -39,6 +39,7 @@
     "gulp-concat": "~2.4.3",
     "babelify": "~5.0.4",
     "through2": "~0.6.3",
-    "gulp-rename": "~1.2.0"
+    "gulp-rename": "~1.2.0",
+    "gulp-sourcemaps": "~1.5.1"
   }
 }

@@ -1,6 +1,6 @@
-var Q = require('q');
+import Q from 'q';
 
-var request = function(path) {
+var request = (path) => {
     var req = new XMLHttpRequest()
         , deferred = Q.defer();
 
@@ -30,13 +30,12 @@ var request = function(path) {
     return deferred.promise;
 };
 
-var api = module.exports = {};
-
-api.r = function(subapi) {
-    return request('/r/'+subapi);
-};
-
-api.comments = function(post) {
-    var path = '/r/' + post.subreddit + '/comments/' + post.id;
-    return request(path);
-};
+export default class api {
+    static r(sub) {
+        return request('/r/'+sub);
+    }
+    static comments(post) {
+        var path = '/r/' + post.subreddit + '/comments/' + post.id;
+        return request(path);
+    }
+}
