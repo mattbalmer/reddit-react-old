@@ -13,7 +13,7 @@ var gulp = require('gulp'),
 var paths = {
     source: {
         css: [ 'client/css/**/*.styl', '!client/css/_/**/*.styl' ],
-        js: 'client/js/**/*.js',
+        js: 'client/**/*.js',
         app_js: './client/js/app.js',
         html: [ 'client/**/*.jade' ]
     },
@@ -61,7 +61,7 @@ gulp.task('js', function() {
         .pipe(rename('reddit.js'))
         .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist/js/'));
+        .pipe(gulp.dest(paths.dest.js));
 });
 gulp.task('watch', function() {
     gulp.watch(paths.source.css, ['css']);

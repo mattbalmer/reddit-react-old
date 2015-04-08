@@ -5,7 +5,7 @@ import Post from './post';
 export default class PostList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { activePost: {}, posts: [] }
+        this.state = { activePost: {}, posts: props.posts }
     }
     componentDidMount() {
         var component = this;

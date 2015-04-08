@@ -3,6 +3,7 @@ import reddit from '../reddit';
 
 export default class Post extends React.Component {
     onClick() {
+        console.log('click', this);
         this.props.onClick(this.props.post.data);
     }
     render() {
@@ -18,7 +19,7 @@ export default class Post extends React.Component {
             });
 
         return (
-            <div className={classes} onClick={this.onClick}>
+            <div className={classes} onClick={this.onClick.bind(this)}>
                 <span className='id'>{this.props.id}</span>
                 <span className='score'>{post.score}</span>
                 <img className={thumbClasses} src={post.thumbnail}/>

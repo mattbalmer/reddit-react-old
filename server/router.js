@@ -19,10 +19,14 @@ routes.get('/', (req, res) => {
 
     request('http://reddit.com/r/all.json', function(error, response, body) {
         if(response.statusCode == 200 && !error && body) {
+            body = JSON.parse(body);
             var posts = body.data.children;
+            console.log(posts, '\n^ posts ^');
 
             res.render('index', {
-                content: React.renderToString(<App posts={posts} />)
+                content: React.renderToString(<App posts={posts} />),
+                state: { posts: posts },
+                __STATE__: 'window.__STATE__ = ' + JSON.stringify({ posts: posts })
             });
         }
     });
