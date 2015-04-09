@@ -1,18 +1,16 @@
 import React from 'react/addons';
-import reddit from '../reddit';
 
 export default class SortOption extends React.Component {
     onClick(event) {
-        reddit.fetch('all', this.props.mode.toLowerCase())
+        this.props.onChange(this.props.mode);
     }
     render() {
-        var mode = this.props.mode.toLowerCase()
-            , classNames = mode + ' btn btn-default';
-
-        if(this.props.active) {
-            classNames += ' active';
-        }
-
-        return <button type='button' onClick={this.onClick} className={classNames}>{this.props.mode}</button>;
+        var cx = React.addons.classSet
+            , classes = cx({
+                btn: true,
+                'btn-default': true,
+                active: this.props.current.toLowerCase() == this.props.mode.toLowerCase()
+            });
+        return <button type='button' onClick={this.onClick.bind(this)} className={classes}>{this.props.mode}</button>;
     }
 }

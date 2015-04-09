@@ -32,9 +32,9 @@ export default class PostDetails extends React.Component {
         this.unsubscribe();
     }
     mapComments(comments) {
-        return comments.map(function(comment, i) {
+        return comments.map((comment, i) => {
             return <Comment comment={comment} id={i+1} level={1} />
-        }, this);
+        });
     }
     render() {
         var cx = React.addons.classSet

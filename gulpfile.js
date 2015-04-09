@@ -13,7 +13,7 @@ var gulp = require('gulp'),
 var paths = {
     source: {
         css: [ 'client/css/**/*.styl', '!client/css/_/**/*.styl' ],
-        js: 'client/**/*.js',
+        js: ['client/**/*.js', 'app/**/*.js'],
         app_js: './client/js/app.js',
         html: [ 'client/**/*.jade' ]
     },

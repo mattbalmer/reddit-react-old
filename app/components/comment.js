@@ -21,8 +21,8 @@ export default class Comment extends React.Component {
         return (
             <div className={classes}>
                 <div className='details'>
-                    <span className='comment-collapse' onClick={this.collapseComment}>-</span>
-                    <span className='comment-expand' onClick={this.expandComment}>+</span>
+                    <span className='comment-collapse' onClick={this.collapseComment.bind(this)}>-</span>
+                    <span className='comment-expand' onClick={this.expandComment.bind(this)}>+</span>
                     <span className='author'>{this.props.comment.data.author}</span>
                     <span className='score'>{this.props.comment.data.score} points</span>
                     <span className='when'>{reddit.utils.timeAgo(this.props.comment.data.created_utc)}</span>

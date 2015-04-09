@@ -108,12 +108,12 @@ var Comment = (function (_React$Component) {
                         { className: "details" },
                         React.createElement(
                             "span",
-                            { className: "comment-collapse", onClick: this.collapseComment },
+                            { className: "comment-collapse", onClick: this.collapseComment.bind(this) },
                             "-"
                         ),
                         React.createElement(
                             "span",
-                            { className: "comment-expand", onClick: this.expandComment },
+                            { className: "comment-expand", onClick: this.expandComment.bind(this) },
                             "+"
                         ),
                         React.createElement(
@@ -250,7 +250,7 @@ var PostDetails = (function (_React$Component) {
             value: function mapComments(comments) {
                 return comments.map(function (comment, i) {
                     return React.createElement(Comment, { comment: comment, id: i + 1, level: 1 });
-                }, this);
+                });
             }
         },
         render: {
@@ -365,9 +365,11 @@ var PostList = (function (_React$Component) {
         },
         mapPosts: {
             value: function mapPosts(posts) {
+                var _this = this;
+
                 return posts.map(function (post, i) {
-                    return React.createElement(Post, { post: post, id: i + 1, onClick: this.onPostSelected, activePost: this.state.activePost });
-                }, this);
+                    return React.createElement(Post, { post: post, id: i + 1, onClick: _this.onPostSelected.bind(_this), activePost: _this.state.activePost });
+                });
             }
         },
         render: {
@@ -502,8 +504,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var React = _interopRequire(require("react/addons"));
 
-var reddit = _interopRequire(require("../reddit"));
-
 var SortOption = (function (_React$Component) {
     function SortOption() {
         _classCallCheck(this, SortOption);
@@ -518,21 +518,20 @@ var SortOption = (function (_React$Component) {
     _createClass(SortOption, {
         onClick: {
             value: function onClick(event) {
-                reddit.fetch("all", this.props.mode.toLowerCase());
+                this.props.onChange(this.props.mode);
             }
         },
         render: {
             value: function render() {
-                var mode = this.props.mode.toLowerCase(),
-                    classNames = mode + " btn btn-default";
-
-                if (this.props.active) {
-                    classNames += " active";
-                }
-
+                var cx = React.addons.classSet,
+                    classes = cx({
+                    btn: true,
+                    "btn-default": true,
+                    active: this.props.current.toLowerCase() == this.props.mode.toLowerCase()
+                });
                 return React.createElement(
                     "button",
-                    { type: "button", onClick: this.onClick, className: classNames },
+                    { type: "button", onClick: this.onClick.bind(this), className: classes },
                     this.props.mode
                 );
             }
@@ -544,12 +543,16 @@ var SortOption = (function (_React$Component) {
 
 module.exports = SortOption;
 
-},{"../reddit":11,"react/addons":16}],7:[function(require,module,exports){
+},{"react/addons":16}],7:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -557,19 +560,26 @@ var React = _interopRequire(require("react"));
 
 var SortOption = _interopRequire(require("./sort-option"));
 
-var SortOptionsList = (function () {
-    function SortOptionsList() {
+var reddit = _interopRequire(require("../reddit"));
+
+var SortOptionsList = (function (_React$Component) {
+    function SortOptionsList(props) {
         _classCallCheck(this, SortOptionsList);
+
+        _get(Object.getPrototypeOf(SortOptionsList.prototype), "constructor", this).call(this, props);
+        this.state = { current: props.mode || "hot" };
     }
+
+    _inherits(SortOptionsList, _React$Component);
 
     _createClass(SortOptionsList, {
         render: {
             value: function render() {
-                var cs = React.addons.classSet,
-                    mode = this.props.mode || "hot",
-                    options = ["Hot", "New", "Top"],
+                var _this = this;
+
+                var options = ["Hot", "New", "Top"],
                     html = options.map(function (option) {
-                    return React.createElement(SortOption, { mode: option, active: option.toLowerCase() == mode.toLowerCase() });
+                    return React.createElement(SortOption, { mode: option, current: _this.state.current, onChange: _this.onChange.bind(_this) });
                 });
 
                 return React.createElement(
@@ -578,15 +588,22 @@ var SortOptionsList = (function () {
                     html
                 );
             }
+        },
+        onChange: {
+            value: function onChange(mode) {
+                console.log("this", this);
+                this.setState({ current: mode });
+                reddit.fetch("all", mode.toLowerCase());
+            }
         }
     });
 
     return SortOptionsList;
-})();
+})(React.Component);
 
 module.exports = SortOptionsList;
 
-},{"./sort-option":6,"react":188}],8:[function(require,module,exports){
+},{"../reddit":11,"./sort-option":6,"react":188}],8:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -761,12 +778,18 @@ module.exports = {
 },{}],11:[function(require,module,exports){
 "use strict";
 
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+
+var events = _interopRequire(require("./events"));
+
+var api = _interopRequire(require("./api"));
+
 module.exports = {
     fetch: function fetch(path) {
         var mode = arguments[1] === undefined ? "hot" : arguments[1];
 
-        return reddit.api.r(path + "/" + mode).then(function (req) {
-            reddit.events.trigger("postsRefreshed", req.data.data.children);
+        return api.r(path + "/" + mode).then(function (req) {
+            events.trigger("postsRefreshed", req.data.data.children);
         });
     },
 

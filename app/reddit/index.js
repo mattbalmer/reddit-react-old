@@ -1,8 +1,11 @@
+import events from './events'
+import api from './api'
+
 export default {
     fetch(path, mode = 'hot') {
-        return reddit.api.r(path+'/'+mode)
+        return api.r(path+'/'+mode)
             .then((req) => {
-                reddit.events.trigger('postsRefreshed', req.data.data.children);
+                events.trigger('postsRefreshed', req.data.data.children);
             });
     },
 

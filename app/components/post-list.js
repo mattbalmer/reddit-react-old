@@ -26,9 +26,9 @@ export default class PostList extends React.Component {
         reddit.events.trigger('postSelected', post);
     }
     mapPosts(posts) {
-        return posts.map(function(post, i) {
-            return <Post post={post} id={i+1} onClick={this.onPostSelected} activePost={this.state.activePost} />
-        }, this);
+        return posts.map((post, i) => {
+            return <Post post={post} id={i+1} onClick={this.onPostSelected.bind(this)} activePost={this.state.activePost} />
+        });
     }
     render() {
         return (
