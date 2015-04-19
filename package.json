@@ -3,7 +3,6 @@
     "version": "0.0.3",
     "private": true,
     "scripts": {
-        "_start": "NODE_PATH=lib supervisor -w server/ server/server.js",
         "start": "NODE_PATH=lib:app babel-node server/server.js",
         "build": "NODE_PATH=lib:app gulp compile",
         "postinstall": "./node_modules/bower/bin/bower install"
