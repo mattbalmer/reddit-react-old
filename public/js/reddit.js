@@ -156,13 +156,11 @@ var Comment = (function (_React$Component) {
         },
         collapseComment: {
             value: function collapseComment() {
-                console.log("collapse", this.props.comment.data);
                 this.setState({ collapsed: true });
             }
         },
         expandComment: {
             value: function expandComment() {
-                console.log("expand", this.props.comment.data);
                 this.setState({ collapsed: false });
             }
         },
@@ -653,17 +651,17 @@ var SubredditSearch = (function (_React$Component) {
                 var value = this.state.value;
                 return React.createElement(
                     "form",
-                    { className: "subreddit-search form-inline", onSubmit: this.onSubmit },
+                    { className: "subreddit-search form-inline", onSubmit: this.onSubmit.bind(this) },
                     React.createElement(
                         "div",
                         { className: "input-group" },
-                        React.createElement("input", { ref: "searchInput", type: "text", className: "form-control", value: value, onChange: this.onChange }),
+                        React.createElement("input", { ref: "searchInput", type: "text", className: "form-control", value: value, onChange: this.onChange.bind(this) }),
                         React.createElement(
                             "div",
                             { className: "input-group-btn" },
                             React.createElement(
                                 "button",
-                                { type: "submit", onClick: this.onSubmit, className: "btn btn-primary" },
+                                { type: "submit", onClick: this.onSubmit.bind(this), className: "btn btn-primary" },
                                 "Go"
                             )
                         )
@@ -844,15 +842,12 @@ var utils = (function () {
 module.exports = utils;
 
 },{}],13:[function(require,module,exports){
-//var reddit = require('reddit');
 "use strict";
 
 var React = require("react"),
     App = require("components/app.js");
 
 document.addEventListener("DOMContentLoaded", function () {
-    //reddit.render('hot', {});
-    //reddit.fetch('all');
     var state = window.__STATE__;
     React.render(React.createElement(App, { posts: state.posts }), document.body);
 });

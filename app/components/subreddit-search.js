@@ -22,11 +22,11 @@ export default class SubredditSearch extends React.Component {
     render() {
         var value = this.state.value;
         return (
-            <form className='subreddit-search form-inline' onSubmit={this.onSubmit}>
+            <form className='subreddit-search form-inline' onSubmit={this.onSubmit.bind(this)}>
                 <div className='input-group'>
-                    <input ref='searchInput' type='text' className='form-control' value={value} onChange={this.onChange} />
+                    <input ref='searchInput' type='text' className='form-control' value={value} onChange={this.onChange.bind(this)} />
                     <div className='input-group-btn'>
-                        <button type='submit' onClick={this.onSubmit} className='btn btn-primary'>Go</button>
+                        <button type='submit' onClick={this.onSubmit.bind(this)} className='btn btn-primary'>Go</button>
                     </div>
                 </div>
             </form>

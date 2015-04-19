@@ -41,11 +41,9 @@ export default class Comment extends React.Component {
         return JSON.stringify(this.props.comment.data);
     }
     collapseComment() {
-        console.log('collapse', this.props.comment.data);
         this.setState({ collapsed: true });
     }
     expandComment() {
-        console.log('expand', this.props.comment.data);
         this.setState({ collapsed: false });
     }
     hasReplies() {
